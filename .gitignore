@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+jobs/*
+!jobs/.gitkeep
+
+# Local runtime data, source media, renders, and experiment workspaces.
+scratch/
+
+# Editor/runtime noise.
+.coverage
+htmlcov/
+*.log
+Thumbs.db
+.DS_Store

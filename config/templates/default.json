@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "canvas": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "layout": "fit_blur",
+    "blur_radius": 28,
+    "background_brightness": -0.12
+  },
+  "download": {
+    "margin_seconds": 15.0,
+    "max_height": 1080,
+    "partial_timeout_seconds": 120,
+    "fallback_height": 360
+  },
+  "transcription": {
+    "model": "small",
+    "language": "ja",
+    "device": "cpu",
+    "compute_type": "int8",
+    "beam_size": 5,
+    "vad_filter": false,
+    "word_timestamps": true
+  },
+  "subtitle": {
+    "font_name": "Yu Gothic UI",
+    "font_size": 62,
+    "scale_x": 90,
+    "primary_color": "&H00FFFFFF",
+    "outline_color": "&H00111111",
+    "back_color": "&H78000000",
+    "outline": 7,
+    "shadow": 2,
+    "alignment": 2,
+    "margin_left": 80,
+    "margin_right": 210,
+    "margin_vertical": 390,
+    "max_chars_per_line": 15,
+    "max_lines": 2,
+    "min_chars_per_cue": 6,
+    "max_cue_seconds": 3.8,
+    "min_cue_seconds": 0.7,
+    "pause_break_seconds": 0.55,
+    "remove_fillers": true
+  },
+  "audio": {
+    "target_lufs": -14.0,
+    "true_peak": -1.5,
+    "lra": 11.0,
+    "bgm_volume": 0.08
+  },
+  "render": {
+    "encoder": "auto",
+    "nvenc_preset": "p5",
+    "nvenc_cq": 23,
+    "x264_preset": "medium",
+    "x264_crf": 20,
+    "audio_bitrate": "192k"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "project_id": "fixture-project",
+  "source_id": "source-001",
+  "story_beats": [
+    {"id": "beat-event", "role": "reaction", "source_order_lock": true, "timeline_item_ids": ["clip-event"]}
+  ],
+  "timeline_items": [
+    {"id": "clip-event", "type": "source_clip", "story_beat_id": "beat-event", "video_in_pts": 600, "video_out_pts": 1050, "audio_in_sample": 960000, "audio_out_sample": 1680000}
+  ],
+  "presentation_events": [
+    {"id": "event-face-before", "timeline_item_id": "clip-event", "source_in_pts": 600, "source_out_pts": 750, "layout": "person"},
+    {"id": "event-game-text", "timeline_item_id": "clip-event", "source_in_pts": 750, "source_out_pts": 900, "layout": "content"},
+    {"id": "event-face-after", "timeline_item_id": "clip-event", "source_in_pts": 900, "source_out_pts": 1050, "layout": "split"}
+  ],
+  "speech_captions": [
+    {"id": "caption-before", "timeline_item_id": "clip-event", "source_in_pts": 630, "source_out_pts": 720, "text": "まだ遊んでないよ", "role": "normal", "token_ids": ["word-101"]},
+    {"id": "caption-reaction", "timeline_item_id": "clip-event", "source_in_pts": 915, "source_out_pts": 1010, "text": "なんで知ってるの！？", "role": "emphasis", "token_ids": ["word-102", "word-103"]}
+  ],
+  "editorial_overlays": [
+    {"id": "overlay-game", "timeline_item_id": "clip-event", "local_in_frame": 150, "local_out_frame": 300, "kind": "comment_card", "text": "もう遊んだ後ですよね？"}
+  ],
+  "join_edges": [],
+  "source_regions": {
+    "person": [700000, 500000, 300000, 500000],
+    "content": [0, 0, 1000000, 800000],
+    "comment": [100000, 100000, 800000, 250000]
+  }
+}

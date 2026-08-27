@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "project_id": "fixture-project",
+  "source_id": "source-001",
+  "story_beats": [
+    {"id": "beat-title", "role": "hook", "source_order_lock": true, "timeline_item_ids": ["card-title"]},
+    {"id": "beat-scene-one", "role": "development", "source_order_lock": false, "timeline_item_ids": ["clip-one"]},
+    {"id": "beat-scene-two", "role": "development", "source_order_lock": false, "timeline_item_ids": ["clip-two"]},
+    {"id": "beat-scene-three", "role": "payoff", "source_order_lock": false, "timeline_item_ids": ["clip-three"]}
+  ],
+  "timeline_items": [
+    {"id": "card-title", "type": "generated_card", "story_beat_id": "beat-title", "duration_frames": 30, "text": "かわいい瞬間 3選"},
+    {"id": "clip-one", "type": "source_clip", "story_beat_id": "beat-scene-one", "video_in_pts": 0, "video_out_pts": 120, "audio_in_sample": 0, "audio_out_sample": 192000},
+    {"id": "clip-two", "type": "source_clip", "story_beat_id": "beat-scene-two", "video_in_pts": 600, "video_out_pts": 750, "audio_in_sample": 960000, "audio_out_sample": 1200000},
+    {"id": "clip-three", "type": "source_clip", "story_beat_id": "beat-scene-three", "video_in_pts": 1200, "video_out_pts": 1350, "audio_in_sample": 1920000, "audio_out_sample": 2160000}
+  ],
+  "presentation_events": [
+    {"id": "event-one", "timeline_item_id": "clip-one", "source_in_pts": 0, "source_out_pts": 120, "layout": "standard"},
+    {"id": "event-two", "timeline_item_id": "clip-two", "source_in_pts": 600, "source_out_pts": 750, "layout": "person"},
+    {"id": "event-three", "timeline_item_id": "clip-three", "source_in_pts": 1200, "source_out_pts": 1350, "layout": "content"}
+  ],
+  "speech_captions": [
+    {"id": "caption-one", "timeline_item_id": "clip-one", "source_in_pts": 20, "source_out_pts": 90, "text": "一回目", "role": "normal", "token_ids": ["word-201"]},
+    {"id": "caption-two", "timeline_item_id": "clip-two", "source_in_pts": 620, "source_out_pts": 700, "text": "二回目", "role": "normal", "token_ids": ["word-202"]},
+    {"id": "caption-three", "timeline_item_id": "clip-three", "source_in_pts": 1220, "source_out_pts": 1310, "text": "今のは無理！", "role": "emphasis", "token_ids": ["word-203"]}
+  ],
+  "editorial_overlays": [
+    {"id": "overlay-one", "timeline_item_id": "clip-one", "local_in_frame": 0, "local_out_frame": 45, "kind": "context", "text": "1戦目"},
+    {"id": "overlay-two", "timeline_item_id": "clip-two", "local_in_frame": 0, "local_out_frame": 45, "kind": "context", "text": "2戦目"},
+    {"id": "overlay-three", "timeline_item_id": "clip-three", "local_in_frame": 0, "local_out_frame": 45, "kind": "context", "text": "3戦目"}
+  ],
+  "join_edges": [
+    {"id": "join-title-one", "from_item_id": "card-title", "to_item_id": "clip-one", "audio_transition": "hard"},
+    {"id": "join-one-two", "from_item_id": "clip-one", "to_item_id": "clip-two", "audio_transition": "micro_fade"},
+    {"id": "join-two-three", "from_item_id": "clip-two", "to_item_id": "clip-three", "audio_transition": "micro_fade"}
+  ],
+  "source_regions": {
+    "person": [700000, 500000, 300000, 500000],
+    "content": [0, 0, 1000000, 800000],
+    "comment": [100000, 100000, 800000, 250000]
+  }
+}

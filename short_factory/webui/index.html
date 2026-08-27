@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Short Factory | ショートを編集</title>
+    <link rel="stylesheet" href="/assets/style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">LOCAL REVIEW</p>
+        <h1>Short Factory</h1>
+      </div>
+      <div id="connectionBadge" class="badge badge-wait">接続中</div>
+    </header>
+
+    <main>
+      <section id="startupPanel" class="startup-panel">
+        <h2>ローカルセッションを確認しています</h2>
+        <p id="startupMessage">起動URLに含まれる一時tokenを検証しています。</p>
+      </section>
+
+      <section id="workspace" class="workspace" hidden>
+        <div class="mode-switcher" role="tablist" aria-label="Short Factoryの作業を選択">
+          <button
+            id="candidateModeButton"
+            class="mode-button is-active"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="candidateWorkspace"
+          >
+            候補を探す
+          </button>
+          <button
+            id="compositionModeButton"
+            class="mode-button"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="compositionWorkspace"
+          >
+            ショートを編集
+          </button>
+        </div>
+
+        <section
+          id="candidateWorkspace"
+          class="candidate-workspace"
+          role="tabpanel"
+          aria-labelledby="candidateModeButton"
+        >
+          <section class="panel candidate-intake-panel" aria-labelledby="candidateHeading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">AI CANDIDATES</p>
+                <h2 id="candidateHeading">動画から切り抜き候補を探す</h2>
+              </div>
+              <span id="candidateRunIdentity" class="identity">新しい動画</span>
+            </div>
+
+            <p id="candidateProviderDescription" class="candidate-lead">
+              動画はPC内で文字起こしし、LM Studioが最大5件を提案します。有力な箇所がなければ0件で完了します。
+            </p>
+
+            <div id="candidateHistoryPanel" class="candidate-history-panel" hidden>
+              <div>
+                <strong>保存済みの候補結果</strong>
+                <span>ブラウザを閉じてもPC内に残ります</span>
+              </div>
+              <select id="candidateHistorySelect" aria-label="保存済みの候補結果"></select>
+              <button id="candidateHistoryOpenButton" class="button button-secondary" type="button">
+                結果を開く
+              </button>
+            </div>
+
+            <input
+              id="candidateFileInput"
+              class="visually-hidden"
+              type="file"
+              accept="video/*,.mp4,.webm,.mov,.mkv,.m4v"
+            >
+            <div
+              id="candidateDropZone"
+              class="candidate-drop-zone"
+              role="button"
+              tabindex="0"
+              aria-describedby="candidateDropHint"
+            >
+              <strong>動画をここにドロップ</strong>
+              <span id="candidateDropHint">またはクリックして動画を選択</span>
+            </div>
+
+            <div id="candidateFilePanel" class="candidate-file-panel" hidden>
+              <dl class="candidate-file-grid">
+                <div>
+                  <dt>ファイル</dt>
+                  <dd id="candidateFileName">—</dd>
+                </div>
+                <div>
+                  <dt>容量</dt>
+                  <dd id="candidateFileSize">—</dd>
+                </div>
+                <div>
+                  <dt>形式</dt>
+                  <dd id="candidateFileType">—</dd>
+                </div>
+                <div>
+                  <dt>更新日時</dt>
+                  <dd id="candidateFileModified">—</dd>
+                </div>
+              </dl>
+
+              <div class="rights-confirmations">
+                <label>
+                  <input id="candidateRightsCheckbox" type="checkbox">
+                  この動画を編集・分析する権利または許可があります
+                </label>
+                <label>
+                  <input id="candidateLocalProcessingCheckbox" type="checkbox">
+                  <span id="candidateLocalProcessingLabel">PC内のWhisperとLM Studioで動画・音声・文字起こしを処理してよいです</span>
+                </label>
+              </div>
+
+              <p id="candidateFormError" class="inline-error" role="alert" hidden></p>
+              <div class="candidate-primary-row">
+                <button id="candidateStartButton" class="button button-primary" type="button" disabled>
+                  候補を探す
+                </button>
+              </div>
+            </div>
+
+            <div id="candidateProgressPanel" class="candidate-progress-panel" hidden>
+              <div class="candidate-progress-heading">
+                <div>
+                  <span id="candidateStateBadge" class="badge badge-wait">準備中</span>
+                  <h3 id="candidateProgressTitle">動画を準備しています</h3>
+                </div>
+                <span id="candidateProgressPercent">—</span>
+              </div>
+              <progress id="candidateProgressBar" max="100"></progress>
+              <p id="candidateProgressDetail" class="candidate-progress-detail"></p>
+              <p id="candidateRecoveryNote" class="candidate-recovery-note" hidden></p>
+              <div class="candidate-progress-actions">
+                <button id="candidateCancelButton" class="button button-secondary" type="button">
+                  処理を中止
+                </button>
+                <button id="candidateResumeButton" class="button button-primary" type="button" hidden>
+                  続きから再開
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section id="candidateResultsPanel" class="panel candidate-results-panel" hidden aria-labelledby="candidateResultsHeading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">RESULTS</p>
+                <h2 id="candidateResultsHeading">切り抜き候補</h2>
+              </div>
+              <span id="candidateResultCount" class="badge badge-ok">0件</span>
+            </div>
+
+            <p id="candidateResultsMessage" class="candidate-results-message"></p>
+            <div id="candidateResultsGrid" class="candidate-results-grid">
+              <div id="candidateList" class="candidate-list" role="listbox" aria-label="切り抜き候補"></div>
+              <div id="candidatePreviewPanel" class="candidate-preview-panel" hidden>
+                <video
+                  id="candidatePreviewVideo"
+                  controls
+                  controlslist="nodownload noremoteplayback"
+                  disablepictureinpicture
+                  preload="metadata"
+                ></video>
+                <p id="candidatePreviewLabel">候補を選ぶと元動画の該当位置へ移動します。</p>
+                <div class="candidate-source-nudges" aria-label="元動画の再生位置を微調整">
+                  <button class="button button-quiet" type="button" data-candidate-seek="-30">−30秒</button>
+                  <button class="button button-quiet" type="button" data-candidate-seek="-10">−10秒</button>
+                  <span id="candidateSourceTime">—</span>
+                  <button class="button button-quiet" type="button" data-candidate-seek="10">＋10秒</button>
+                  <button class="button button-quiet" type="button" data-candidate-seek="30">＋30秒</button>
+                </div>
+                <div id="candidateRangeEditor" class="candidate-range-editor" hidden>
+                  <div class="candidate-range-heading">
+                    <div>
+                      <strong>切り抜く範囲を微調整</strong>
+                      <span>上の元動画シークバーで前後を確認できます</span>
+                    </div>
+                    <label class="candidate-loop-toggle">
+                      <input id="candidateLoopCheckbox" type="checkbox">
+                      この範囲をループ
+                    </label>
+                  </div>
+                  <div class="candidate-range-fields">
+                    <label>
+                      <span>開始</span>
+                      <input id="candidateRangeStart" type="text" inputmode="decimal" placeholder="00:00.00">
+                    </label>
+                    <button id="candidateStartFromPlayhead" class="button button-secondary" type="button">現在位置を開始に</button>
+                    <button id="candidateSeekStart" class="button button-quiet" type="button">開始へ移動</button>
+                    <label>
+                      <span>終了</span>
+                      <input id="candidateRangeEnd" type="text" inputmode="decimal" placeholder="00:00.00">
+                    </label>
+                    <button id="candidateEndFromPlayhead" class="button button-secondary" type="button">現在位置を終了に</button>
+                    <button id="candidateSeekEnd" class="button button-quiet" type="button">終了直前へ移動</button>
+                  </div>
+                  <p id="candidateRangeSummary" class="candidate-range-summary"></p>
+                  <p id="candidateRangeError" class="inline-error" role="alert" hidden></p>
+                  <button id="candidateAdoptButton" class="button button-primary candidate-adopt-button" type="button" disabled>
+                    この範囲をショート編集へ
+                  </button>
+                  <p id="candidateAdoptStatus" class="candidate-adopt-status" aria-live="polite"></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="candidate-result-actions">
+              <button id="candidateResetButton" class="button button-primary" type="button">
+                新しい動画を選ぶ（この結果は保存済み）
+              </button>
+            </div>
+          </section>
+        </section>
+
+        <section
+          id="compositionWorkspace"
+          class="composition-workspace"
+          role="tabpanel"
+          aria-labelledby="compositionModeButton"
+          hidden
+        >
+          <section id="compositionEmpty" class="panel editor-empty" hidden>
+            <h2>編集できるショートがありません</h2>
+            <p>「候補を探す」で動画から範囲を選ぶと、ここでカット・字幕・画面構成を調整できます。</p>
+          </section>
+
+          <div id="compositionContent" hidden>
+            <div class="panel composition-toolbar">
+              <div class="composition-project-picker">
+                <label for="compositionProjectSelect">ショート</label>
+                <select id="compositionProjectSelect" aria-label="編集するショート"></select>
+                <button id="compositionReloadButton" class="button button-secondary" type="button">再読込</button>
+              </div>
+              <div class="composition-toolbar-state">
+                <span id="compositionRevisionBadge" class="badge badge-ok">Revision —</span>
+                <span id="compositionDirtyBadge" class="badge" hidden>未保存</span>
+                <button id="compositionDiscardButton" class="button button-secondary" type="button" disabled>変更を破棄</button>
+                <button id="compositionSaveButton" class="button button-primary" type="button" disabled>保存してProxy更新</button>
+                <button id="compositionRenderButton" class="button button-primary" type="button">Proxyを更新</button>
+              </div>
+            </div>
+
+            <p id="compositionValidationMessage" class="inline-error composition-validation-message" role="alert" hidden></p>
+
+            <nav class="short-editor-sections panel" aria-label="ショートの編集項目">
+              <button
+                class="short-editor-section-button is-active"
+                type="button"
+                data-composition-section="cuts"
+                aria-selected="true"
+                aria-controls="compositionCutSection"
+              >
+                <span>構成・画面</span>
+                <small>カット、尺、レイアウト</small>
+              </button>
+              <button
+                class="short-editor-section-button"
+                type="button"
+                data-composition-section="captions"
+                aria-selected="false"
+                aria-controls="compositionCaptionSection"
+              >
+                <span>字幕一覧</span>
+                <small>本文、役割、表示時間</small>
+              </button>
+            </nav>
+
+            <div id="compositionCutSection" class="composition-grid" data-composition-panel="cuts">
+              <aside class="panel composition-story-panel" aria-labelledby="compositionStoryHeading">
+                <div class="section-heading compact-heading">
+                  <div>
+                    <p class="eyebrow">STORY</p>
+                    <h2 id="compositionStoryHeading">残すカット</h2>
+                  </div>
+                  <span id="compositionDurationBadge" class="identity">—</span>
+                </div>
+                <p class="composition-help">上から再生順です。意味が通らないカットはここで外します。</p>
+                <div id="compositionClipList" class="composition-clip-list" role="listbox" aria-label="構成カット"></div>
+              </aside>
+
+              <section class="panel composition-preview-panel" aria-labelledby="compositionPreviewHeading">
+                <div class="section-heading compact-heading">
+                  <div>
+                    <p class="eyebrow">OUTPUT</p>
+                    <h2 id="compositionPreviewHeading">編集プレビュー</h2>
+                  </div>
+                  <span id="compositionRenderIdentity" class="identity">ライブ編集</span>
+                </div>
+                <div id="compositionOutputShell" class="composition-output-shell is-live">
+                  <canvas
+                    id="compositionLiveCanvas"
+                    width="540"
+                    height="960"
+                    aria-label="現在の構成を反映したライブ編集プレビュー"
+                  ></canvas>
+                  <video
+                    id="compositionLiveSource"
+                    class="composition-live-source"
+                    preload="auto"
+                    playsinline
+                  ></video>
+                  <video
+                    id="compositionPreviewVideo"
+                    controls
+                    controlslist="nodownload noremoteplayback"
+                    disablepictureinpicture
+                    preload="metadata"
+                    hidden
+                  ></video>
+                  <div id="compositionLiveControls" class="composition-live-controls">
+                    <button id="compositionLivePlayButton" type="button" aria-label="ライブ編集プレビューを再生">▶</button>
+                    <input
+                      id="compositionLiveSeek"
+                      type="range"
+                      min="0"
+                      max="0"
+                      step="0.01"
+                      value="0"
+                      aria-label="ライブ編集プレビューの再生位置"
+                    />
+                    <span id="compositionLiveTime">0:00.0 / 0:00.0</span>
+                  </div>
+                  <div id="compositionPreviewEmpty" class="video-empty" hidden>プレビューできるカットがありません</div>
+                </div>
+                <div class="composition-render-picker">
+                  <label for="compositionRenderSelect">確認対象</label>
+                  <select id="compositionRenderSelect" aria-label="確認する構成render"></select>
+                </div>
+                <p class="composition-live-note">カット順・削除・尺・字幕・レイアウトはすぐ反映。最終画質と音量は保存後のProxyで確認します。</p>
+
+                <div class="composition-source-heading">
+                  <div>
+                    <p class="eyebrow">REFRAME</p>
+                    <h3>見切れを直す</h3>
+                  </div>
+                  <div class="composition-region-tabs" role="group" aria-label="調整する重要範囲">
+                    <button class="button button-secondary is-active" type="button" data-composition-region="content">ゲーム重要範囲</button>
+                    <button class="button button-secondary" type="button" data-composition-region="person">顔の範囲</button>
+                  </div>
+                </div>
+                <p class="composition-help">枠をドラッグ／右下で拡縮。同じ重要範囲を使うカットへまとめて反映されます。</p>
+                <div id="compositionSourceStage" class="composition-source-stage">
+                  <video
+                    id="compositionSourceVideo"
+                    controls
+                    controlslist="nodownload noremoteplayback"
+                    disablepictureinpicture
+                    preload="metadata"
+                  ></video>
+                  <div id="compositionCropRect" class="composition-crop-rect" tabindex="0" aria-label="表示する重要範囲">
+                    <span id="compositionCropLabel">ゲーム重要範囲</span>
+                    <span class="composition-crop-handle" aria-hidden="true"></span>
+                  </div>
+                  <button id="compositionKeepVisibleButton" class="composition-pin-button" type="button">＋ 見切れ禁止点</button>
+                  <span id="compositionPinMarker" class="composition-pin-marker" hidden aria-hidden="true"></span>
+                </div>
+                <p id="compositionCropStatus" class="composition-crop-status">枠内が自動クロップの基準になります。</p>
+              </section>
+
+              <aside class="panel composition-inspector-panel" aria-labelledby="compositionInspectorHeading">
+                <div class="section-heading compact-heading">
+                  <div>
+                    <p class="eyebrow">SCENE</p>
+                    <h2 id="compositionInspectorHeading">カット調整</h2>
+                  </div>
+                </div>
+                <div id="compositionInspectorEmpty" class="composition-inspector-empty">左からカットを選択してください。</div>
+                <div id="compositionInspector" hidden>
+                  <div class="composition-inspector-block">
+                    <span class="composition-field-label">何を見せる？</span>
+                    <div class="composition-layout-options" role="group" aria-label="カットのレイアウト">
+                      <button type="button" data-composition-layout="split">ゲーム＋顔</button>
+                      <button type="button" data-composition-layout="content">ゲームを寄せる</button>
+                      <button type="button" data-composition-layout="person">顔を寄せる</button>
+                      <button type="button" data-composition-layout="standard">全体を見る</button>
+                    </div>
+                  </div>
+
+                  <div class="composition-inspector-block">
+                    <div class="composition-field-heading">
+                      <span class="composition-field-label">カット範囲</span>
+                      <span id="compositionClipTiming">—</span>
+                    </div>
+                    <div class="composition-trim-grid">
+                      <span>開始</span>
+                      <button type="button" data-composition-trim="start:-1">−1秒</button>
+                      <button type="button" data-composition-trim="start:-0.1">−0.1秒</button>
+                      <button type="button" data-composition-trim="start:0.1">＋0.1秒</button>
+                      <button type="button" data-composition-trim="start:1">＋1秒</button>
+                      <span>終了</span>
+                      <button type="button" data-composition-trim="end:-1">−1秒</button>
+                      <button type="button" data-composition-trim="end:-0.1">−0.1秒</button>
+                      <button type="button" data-composition-trim="end:0.1">＋0.1秒</button>
+                      <button type="button" data-composition-trim="end:1">＋1秒</button>
+                    </div>
+                    <p id="compositionTrimError" class="inline-error" role="alert" hidden></p>
+                  </div>
+
+                  <div class="composition-inspector-block">
+                    <div class="composition-field-heading">
+                      <span class="composition-field-label">このカットの字幕</span>
+                      <span id="compositionCaptionCount">0件</span>
+                    </div>
+                    <button id="compositionCaptionAddButton" class="button button-secondary composition-caption-add" type="button">
+                      ＋ このカットに字幕を追加
+                    </button>
+                    <div id="compositionCaptionList" class="composition-caption-list"></div>
+                    <p id="compositionCaptionError" class="inline-error" role="alert" hidden></p>
+                  </div>
+
+                  <p id="compositionInspectorNote" class="composition-inspector-note"></p>
+                </div>
+              </aside>
+            </div>
+
+            <section
+              id="compositionCaptionSection"
+              class="panel composition-caption-overview"
+              data-composition-panel="captions"
+              aria-labelledby="compositionCaptionOverviewHeading"
+              hidden
+            >
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">CAPTIONS</p>
+                  <h2 id="compositionCaptionOverviewHeading">ショート全体の字幕</h2>
+                </div>
+                <span id="compositionCaptionOverviewCount" class="badge badge-ok">0件</span>
+              </div>
+              <p class="composition-caption-overview-lead">
+                カットごとに字幕を確認できます。表示時間はカット内の秒数で調整し、「映像で確認」で該当位置へ移動します。
+              </p>
+              <div id="compositionCaptionOverviewList" class="composition-caption-overview-list"></div>
+              <div id="compositionCaptionOverviewEmpty" class="composition-caption-overview-empty" hidden>
+                字幕はまだありません。「構成・画面」でカットを選び、最初の字幕を追加してください。
+              </div>
+            </section>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div id="statusMessage" class="status-message" role="status" aria-live="polite" hidden></div>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>

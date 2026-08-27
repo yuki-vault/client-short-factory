@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "project_id": "fixture-project",
+  "source_id": "source-001",
+  "story_beats": [
+    {"id": "beat-hook", "role": "hook", "source_order_lock": true, "timeline_item_ids": ["clip-hook"]},
+    {"id": "beat-setup", "role": "setup", "source_order_lock": true, "timeline_item_ids": ["clip-setup"]},
+    {"id": "beat-payoff", "role": "payoff", "source_order_lock": true, "timeline_item_ids": ["clip-payoff"]}
+  ],
+  "timeline_items": [
+    {"id": "clip-hook", "type": "source_clip", "story_beat_id": "beat-hook", "video_in_pts": 0, "video_out_pts": 150, "audio_in_sample": 0, "audio_out_sample": 240000},
+    {"id": "clip-setup", "type": "source_clip", "story_beat_id": "beat-setup", "video_in_pts": 180, "video_out_pts": 330, "audio_in_sample": 288000, "audio_out_sample": 528000},
+    {"id": "clip-payoff", "type": "source_clip", "story_beat_id": "beat-payoff", "video_in_pts": 360, "video_out_pts": 510, "audio_in_sample": 576000, "audio_out_sample": 816000}
+  ],
+  "presentation_events": [
+    {"id": "event-hook", "timeline_item_id": "clip-hook", "source_in_pts": 0, "source_out_pts": 150, "layout": "standard"},
+    {"id": "event-setup", "timeline_item_id": "clip-setup", "source_in_pts": 180, "source_out_pts": 330, "layout": "standard"},
+    {"id": "event-payoff", "timeline_item_id": "clip-payoff", "source_in_pts": 360, "source_out_pts": 510, "layout": "person"}
+  ],
+  "speech_captions": [
+    {"id": "caption-hook", "timeline_item_id": "clip-hook", "source_in_pts": 15, "source_out_pts": 105, "text": "ちょっと待って", "role": "emphasis", "token_ids": ["word-001", "word-002"]},
+    {"id": "caption-setup", "timeline_item_id": "clip-setup", "source_in_pts": 195, "source_out_pts": 285, "text": "つまりこういうこと？", "role": "normal", "token_ids": ["word-003"]},
+    {"id": "caption-payoff", "timeline_item_id": "clip-payoff", "source_in_pts": 375, "source_out_pts": 465, "text": "全部バレてる！", "role": "emphasis", "token_ids": ["word-004", "word-005"]}
+  ],
+  "editorial_overlays": [],
+  "join_edges": [
+    {"id": "join-hook-setup", "from_item_id": "clip-hook", "to_item_id": "clip-setup", "audio_transition": "micro_fade"},
+    {"id": "join-setup-payoff", "from_item_id": "clip-setup", "to_item_id": "clip-payoff", "audio_transition": "micro_fade"}
+  ],
+  "source_regions": {
+    "person": [700000, 500000, 300000, 500000],
+    "content": [0, 0, 1000000, 800000],
+    "comment": [0, 0, 700000, 250000]
+  }
+}

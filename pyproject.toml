@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "client-short-factory"
+version = "0.1.0"
+description = "Local URL/file to captioned vertical short MVP"
+requires-python = ">=3.11"
+dependencies = [
+  "faster-whisper>=1.2,<2",
+]
+
+[project.scripts]
+client-short-factory = "short_factory.cli:main"
+
+[tool.setuptools]
+packages = ["short_factory"]
+
+[tool.setuptools.package-data]
+short_factory = ["webui/*.html", "webui/*.js", "webui/*.css", "schemas/*.json"]

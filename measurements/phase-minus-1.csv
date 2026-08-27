@@ -1,0 +1,1 @@
+job_id,source_duration_min,short_duration_sec,range_active_min,caption_active_min,final_review_active_min,acquire_wait_min,transcribe_wait_min,render_wait_min,recovery_active_min,caption_edits,range_alternatives,notes
